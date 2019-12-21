@@ -21,6 +21,8 @@ import brave.Span;
 import brave.Tracer;
 import brave.Tracer.SpanInScope;
 
+import java.util.Map;
+
 class ZipkinTracingAdviser {
 
   static final String CALL_PATH = "call.path";
@@ -32,10 +34,22 @@ class ZipkinTracingAdviser {
   }
 
   @SuppressWarnings({"unused", "try"})
-  <T> T invoke(String spanName, String path, ThrowableSupplier<T> supplier) throws Throwable {
+  <T> T invoke(String spanName, String path, ThrowableSupplier<T> supplier, Map<String, String> params) throws Throwable {
     Span span = createSpan(spanName, path);
     try (SpanInScope spanInScope = tracer.withSpanInScope(span)) {
-      return supplier.get();
+      if (params != null && !params.isEmpty())
+      {
+        for (Map.Entry<String, String> entry: params.entrySet()) {
+          String value = entry.getValue() == null ? "" : entry.getValue();
+          span.tag(entry.getKey(), value);
+        }
+      }
+      T resultObj = supplier.get();
+      if (resultObj != null)
+      {
+        span.tag("result", JsonUtils.toJsonString(resultObj));
+      }
+      return resultObj;
     } catch (Throwable throwable) {
       span.tag("error", throwable.getClass().getSimpleName() + ": " + throwable.getMessage());
       throw throwable;

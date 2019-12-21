@@ -80,7 +80,7 @@ public class ZipkinTracingAdviserTest {
 
   @Test
   public void startsNewRootSpan() throws Throwable {
-    String result = tracingAdviser.invoke(spanName, path, supplier);
+    String result = tracingAdviser.invoke(spanName, path, supplier, null);
 
     assertThat(result, is(expected));
     await().atMost(2, SECONDS).until(() -> !traces.isEmpty());
@@ -93,9 +93,9 @@ public class ZipkinTracingAdviserTest {
   @Test
   public void includesExceptionInTags() throws Throwable {
     try {
-      tracingAdviser.invoke(spanName, path, () -> {
+      tracingAdviser.invoke(spanName, path, ()-> {
         throw error;
-      });
+      }, null);
 
       expectFailing(RuntimeException.class);
     } catch (RuntimeException ignored) {
@@ -121,7 +121,7 @@ public class ZipkinTracingAdviserTest {
         waitTillAllAreReady(cyclicBarrier);
 
         try (SpanInScope spanInScope = tracing.tracer().withSpanInScope(currentSpan)) {
-          assertThat(tracingAdviser.invoke(spanName, path, supplier), is(expected));
+          assertThat(tracingAdviser.invoke(spanName, path, supplier, null), is(expected));
         } catch (Throwable throwable) {
           fail(throwable.getMessage());
         } finally {

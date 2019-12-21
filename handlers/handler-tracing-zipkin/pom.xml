@@ -54,6 +54,11 @@
       <groupId>io.zipkin.reporter2</groupId>
       <artifactId>zipkin-sender-okhttp3</artifactId>
     </dependency>
+    <!-- 支持通过kafka 上报zipkin调用链信息-->
+    <dependency>
+      <groupId>io.zipkin.reporter2</groupId>
+      <artifactId>zipkin-sender-kafka11</artifactId>
+    </dependency>
     <dependency>
       <groupId>io.zipkin.brave</groupId>
       <artifactId>brave-context-log4j12</artifactId>

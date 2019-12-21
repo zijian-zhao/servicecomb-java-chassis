@@ -19,6 +19,10 @@ package org.apache.servicecomb.tracing.zipkin;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Stream;
 
 import org.apache.servicecomb.tracing.Span;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -43,16 +47,27 @@ class ZipkinSpanAspect {
   @Around("execution(@org.apache.servicecomb.tracing.Span * *(..)) && @annotation(spanAnnotation)")
   public Object advise(ProceedingJoinPoint joinPoint, Span spanAnnotation) throws Throwable {
     String spanName = spanAnnotation.spanName();
-    String callPath = spanAnnotation.callPath();
+    StringBuilder callPath = new StringBuilder(spanAnnotation.callPath());
     Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
     LOG.debug("Generating zipkin span for method {}", method.toString());
     if ("".equals(spanName)) {
       spanName = method.getName();
     }
-    if ("".equals(callPath)) {
-      callPath = method.toString();
+    if ("".equals(callPath.toString())) {
+      callPath = new StringBuilder(method.toString());
     }
 
-    return adviser.invoke(spanName, callPath, joinPoint::proceed);
+
+    Map<String, String> params = new HashMap<>();
+    Object[] paramObjs = joinPoint.getArgs();
+    if (paramObjs != null && paramObjs.length > 0)
+    {
+      for (int i = 0; i < paramObjs.length; i++) {
+        params.put("param" + i + " name=" + method.getParameters()[i].getName(), JsonUtils.toJsonString(paramObjs[i]));
+      }
+
+    }
+
+    return adviser.invoke(spanName, callPath.toString(), joinPoint::proceed, params);
   }
 }

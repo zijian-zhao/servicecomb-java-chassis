@@ -39,6 +39,8 @@ public interface ServiceCombConstants {
 
   String CONFIG_TRACING_COLLECTOR_ADDRESS = "servicecomb.tracing.collector.address";
 
+  String CONFIG_TRACING_COLLECTOR_MQ_ADDRESS = "servicecomb.tracing.collector.mq.address";
+
   String CONFIG_TRACING_COLLECTOR_API_V1 = "v1";
 
   String CONFIG_TRACING_COLLECTOR_API_V2 = "v2";
