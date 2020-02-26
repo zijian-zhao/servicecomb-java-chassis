@@ -20,7 +20,8 @@ public class JsonUtils {
             }
             return mapper.writeValueAsString(model);
         } catch (JsonProcessingException e) {
-            logger.error("POJO to json string error", e);
+//            logger.error("POJO to json string error", e);
+            logger.error("POJO to json string error");
         }
         return null;
     }
@@ -29,7 +30,8 @@ public class JsonUtils {
         try {
             return mapper.readValue(jsonStr, clazz);
         } catch (IOException e) {
-            logger.error("json string to POJO error", e);
+//            logger.error("json string to POJO error", e);
+            logger.error("json string to POJO error");
         }
         return null;
     }

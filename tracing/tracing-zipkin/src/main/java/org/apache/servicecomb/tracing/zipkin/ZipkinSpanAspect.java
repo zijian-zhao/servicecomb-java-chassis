@@ -63,7 +63,8 @@ class ZipkinSpanAspect {
     if (paramObjs != null && paramObjs.length > 0)
     {
       for (int i = 0; i < paramObjs.length; i++) {
-        params.put("param" + i + " name=" + method.getParameters()[i].getName(), JsonUtils.toJsonString(paramObjs[i]));
+        params.put("param" + i + "; type=" + method.getParameters()[i].getType() +"; name=" + method.getParameters()[i].getName(),
+                JsonUtils.toJsonString(paramObjs[i]));
       }
 
     }
