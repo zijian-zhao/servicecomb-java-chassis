@@ -26,8 +26,14 @@ import brave.Tracing;
 @Configuration
 @EnableAspectJAutoProxy
 class ZipkinSpanAspectConfig {
+
   @Bean
   ZipkinSpanAspect zipkinSpanAspect(Tracing tracing) {
     return new ZipkinSpanAspect(tracing);
+  }
+
+  @Bean
+  ZipkinCustomTracingHelper zipkinCustomTracingHelper(Tracing tracing) {
+    return new ZipkinCustomTracingHelper(tracing);
   }
 }
